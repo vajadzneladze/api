@@ -20,6 +20,14 @@ class UserSeeder extends Seeder
                 'role_id' => 1,
                 'name'    => 'ვაჟა ძნელაძე'
             ],
+            [
+                'email'   => 'admin@gmail.com',
+                'password'=> bcrypt('password123'),
+                'age'     => '13',
+                'phone'   => '558 264 564',
+                'role_id' => 1,
+                'name'    => 'ადმინისტრატორი'
+            ],
         ];
 
 

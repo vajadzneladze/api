@@ -13,6 +13,8 @@ class RoleSeeder extends Seeder
     {
         $items = [
             [ 'title' => 'ადმინისტრატორი', 'level' => '1', 'description' => ''],
+            [ 'title' => 'კლიენტი', 'level' => '2', 'description' => ''],
+            [ 'title' => 'ედიტორი', 'level' => '3', 'description' => ''],
 
         ];
 
