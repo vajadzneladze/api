@@ -2,30 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRequest;
+use App\Services\UserService;
+use Exception;
 use Illuminate\Http\Request;
-use App\User;
 
 class UserController extends Controller
 {
+    protected $service;
 
-    /**
-     * UserController constructor.
-     */
-    public function __construct()
+
+    public function __construct(UserService $service)
     {
-        $this->middleware('auth:api');
-    }
-
-    public function fileUpload(Request $request){
-
-        $request->validate([
-            'file' => 'required|mimes:jpg,png,pdf|max:2048'
-        ]);
-
-        $file = $request->file->getClientOriginalName();
-        return response()->json([
-            'file' => $file
-        ]);
+        $this->service = $service;
     }
 
     /**
@@ -35,25 +24,18 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $items = User::with('role');
+        $result  = ['status' => 200];
 
-        if($request->keyword){
-            $items = $items->where('email', 'like', "%{$request->keyword}%")
-                            ->orWhere('name', 'like', "%{$request->keyword}%");
+        try {
+            $result['data'] = $this->service->getAll($request);
+        } catch (Exception $e) {
+            $result = [
+                'status' => 500,
+                'error'  => $e->getMessage()
+            ];
         }
 
-        if($request->perPage){
-
-            $items = $items->paginate($request->perPage);
-        }else{
-            $items = $items->paginate(10);
-        }
-
-        return response()->json([
-            'message'=> 'მოთხოვნილი ჩანაწერების სია',
-            'result' => $items,
-            'error'  => false
-        ], 200);
+        return response()->json($result, $result['status']);
     }
 
     /**
@@ -63,7 +45,7 @@ class UserController extends Controller
      */
     public function create()
     {
-
+        //
     }
 
     /**
@@ -72,46 +54,55 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        $this->validate($request, [
-            'name'    => 'required|max:50',
-            'email'   => 'required|email|unique:users,email',
-            'password'=> 'required|max:50',
-            'role_id' => 'required',
+        $data = $request->only([
+            'name',
+            'email',
+            'password',
+            'phone',
+            'address',
+            'age',
+            'description',
+            'deposit',
+            'role_id',
         ]);
 
-        $data = $request->all();
+        $result = ['status' => 200];
 
-        $newRecord = User::create($data);
-
-        return response()->json([
-            'message' => 'ჩანაწერი წარმატებით დაემატა',
-            'result'  => $newRecord,
-            'error'   => false,
-        ], 201);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $item = User::find($id);
-
-        if(!$item){
-            return response()->json([
-                'message' => 'ჩანაწერი არ მოიძებნა'], 404);
+        try {
+            $result['data'] = $this->service->store($data);
+        } catch (Exception $e) {
+            $result = [
+                'status' => 500,
+                'error'  => $e->getMessage()
+            ];
         }
 
-        return response()->json([
-            'message' => 'ჩანაწერი უნიკალური კოდის მიხედვით',
-            'result'  => $item,
-            'error'   => false
-        ], 200);
+        return response()->json($result, $result['status']);
+    }
+
+
+    /**
+       * Display the specified resource.
+       *
+       * @param  int  $id
+       * @return \Illuminate\Http\Response
+       */
+    public function show($id)
+    {
+        $result  = ['status' => 200];
+
+        try {
+            $result['data'] = $this->service->find($id);
+        } catch (Exception $e) {
+            $result = [
+                'status' => 500,
+                'error'  => $e->getMessage()
+            ];
+        }
+
+        return response()->json($result, $result['status']);
     }
 
     /**
@@ -134,27 +125,30 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'required|max:50',
-            'email' => 'required|email|unique:users,email,' . $id
+        $data = $request->only([
+            'name',
+            'email',
+            'password',
+            'phone',
+            'address',
+            'age',
+            'description',
+            'deposit',
+            'role_id',
         ]);
 
-        $item = User::find($id);
+        $result = ['status' => 200];
 
-        if(!$item){
-            return response()->json([
-                'message' => 'ჩანაწერი არ მოიძებნა'], 404);
+        try {
+            $result['data'] = $this->service->update($data, $id);
+        } catch (Exception $e) {
+            $result = [
+                'status' => 500,
+                'error'  => $e->getMessage()
+            ];
         }
 
-        $updateData = $request->all();
-
-        $item->update($updateData);
-
-        return response()->json([
-            'message' => 'ჩანაწერი წარმატებით განახლდა',
-            'result'  => $item,
-            'error'   => false
-        ], 200);
+        return response()->json($result, $result['status']);
     }
 
     /**
@@ -165,21 +159,17 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $item = User::find($id);
+        $result = ['status' => 200];
 
-        if(!$item){
-            return response()->json([
-                'message' => 'ჩანაწერი არ მოიძებნა'
-            ], 404);
+        try {
+            $result['data'] = $this->service->delete($id);
+        } catch (Exception $e) {
+            $result = [
+                'status' => 500,
+                'error'  => $e->getMessage()
+            ];
         }
 
-
-        $item->delete();
-
-        return response()->json([
-            'message' => 'ჩანაწერი წარმატებით წაიშალა',
-            'result'  => $item,
-            'error'   => false
-        ], 200);
+        return response()->json($result, $result['status']);
     }
 }

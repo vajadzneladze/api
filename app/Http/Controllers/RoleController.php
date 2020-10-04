@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRequest;
+use App\Services\RoleService;
+use Exception;
 use Illuminate\Http\Request;
-use App\Models\Role;
 
 class RoleController extends Controller
-{   
+{
+    protected $service;
 
-    /**
-     * RoleController constructor.
-     */
-    public function __construct()
+
+    public function __construct(RoleService $service)
     {
-        $this->middleware('auth:api');
-    } 
+        $this->service = $service;
+    }
 
     /**
      * Display a listing of the resource.
@@ -23,25 +24,18 @@ class RoleController extends Controller
      */
     public function index(Request $request)
     {
-        $items = Role::query();
+        $result  = ['status' => 200];
 
-        if($request->keyword){
-            $items = $items->where('title', 'like', "%{$request->keyword}%")
-                            ->orWhere('description', 'like', "%{$request->keyword}%");
+        try {
+            $result['data'] = $this->service->getAll($request);
+        } catch (Exception $e) {
+            $result = [
+                'status' => 500,
+                'error'  => $e->getMessage()
+            ];
         }
 
-        if($request->perPage){
-
-            $items = $items->paginate($request->perPage);
-        }else{
-            $items = $items->paginate(10);
-        }
-        
-        return response()->json([
-            'message'=> 'მოთხოვნილი ჩანაწერების სია', 
-            'result' => $items,
-            'error'  => false
-        ], 200);
+        return response()->json($result, $result['status']);
     }
 
     /**
@@ -60,43 +54,49 @@ class RoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        $this->validate($request, [
-            'title' => 'required',
+        $data = $request->only([
+            'title',
+            'description',
+            'role_id',
         ]);
 
-        $data = $request->all();
+        $result = ['status' => 200];
 
-        $newRecord  = Role::create($data);
-
-        return response()->json([
-            'message' => 'ჩანაწერი წარმატებით დაემატა',
-            'result'  => $newRecord,
-            'error'   => false,
-        ], 201);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $item = Role::find($id);
-
-        if(!$item){
-            return response()->json([
-                'message' => 'ჩანაწერი არ მოიძებნა'], 404);
+        try {
+            $result['data'] = $this->service->store($data);
+        } catch (Exception $e) {
+            $result = [
+                'status' => 500,
+                'error'  => $e->getMessage()
+            ];
         }
 
-        return response()->json([
-            'message' => 'ჩანაწერი უნიკალური კოდის მიხედვით',
-            'result'  => $item,
-            'error'   => false
-        ], 200);
+        return response()->json($result, $result['status']);
+    }
+
+
+    /**
+       * Display the specified resource.
+       *
+       * @param  int  $id
+       * @return \Illuminate\Http\Response
+       */
+    public function show($id)
+    {
+        $result  = ['status' => 200];
+
+        try {
+            $result['data'] = $this->service->find($id);
+        } catch (Exception $e) {
+            $result = [
+                'status' => 500,
+                'error'  => $e->getMessage()
+            ];
+        }
+
+        return response()->json($result, $result['status']);
     }
 
     /**
@@ -119,28 +119,26 @@ class RoleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'title'   => 'required',
+        $data = $request->only([
+            'title',
+            'description',
+            'role_id'
         ]);
 
+        $result = ['status' => 200];
 
-        $item = Role::find($id);
-
-        if(!$item){
-            return response()->json([
-                'message' => 'ჩანაწერი არ მოიძებნა'], 404);
+        try {
+            $result['data'] = $this->service->update($data, $id);
+        } catch (Exception $e) {
+            $result = [
+                'status' => 500,
+                'error'  => $e->getMessage()
+            ];
         }
 
-        $updatedData = $request->all();
-        $item->update($updatedData);
-
-        return response()->json([
-            'message' => 'ჩანაწერი წარმატებით განახლდა',
-            'result'  => $item,
-            'error'   => false
-        ], 200);
+        return response()->json($result, $result['status']);
     }
-  
+
     /**
      * Remove the specified resource from storage.
      *
@@ -149,20 +147,17 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
-        $item = Role::find($id);
+        $result = ['status' => 200];
 
-        if(!$item){
-            return response()->json([
-                'message' => 'ჩანაწერი არ მოიძებნა'
-            ], 404);
+        try {
+            $result['data'] = $this->service->delete($id);
+        } catch (Exception $e) {
+            $result = [
+                'status' => 500,
+                'error'  => $e->getMessage()
+            ];
         }
 
-        $item->delete();
-
-        return response()->json([
-            'message' => 'ჩანაწერი წარმატებით წაიშალა',
-            'result'  => $item,
-            'error'   => false
-        ], 200);
+        return response()->json($result, $result['status']);
     }
 }
