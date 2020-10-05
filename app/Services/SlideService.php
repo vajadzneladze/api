@@ -99,6 +99,13 @@ class SlideService
             return $this->store($req, $lang);
         }
 
+        $file_id = $this->fileService->find($req['fileId']);
+
+        if ($file_id) {
+            $req['file_id'] = $file_id->id;
+        }
+
+
         $data->update($req);
 
         return $data;
