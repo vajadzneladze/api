@@ -16,7 +16,7 @@ class DictionaryService
     public function getAll($req, $lang)
     {
         $local_id =  \App('language')[$lang];
-        $data = $this->model->with('lang');
+        $data = $this->model->with('lang')->orderBy('key');
 
         if ($local_id) {
             $data = $data->where('local_id', $local_id);
@@ -35,6 +35,23 @@ class DictionaryService
 
         return $data;
     }
+
+
+    public function getAllRecord($lang)
+    {
+        $local_id =  \App('language')[$lang];
+        $data = $this->model->with('lang');
+
+        if ($local_id) {
+            $data = $data->where('local_id', $local_id);
+        }
+
+        $data = $data->get();
+        return $data;
+    }
+
+
+
 
     public function find($lang, $itemId)
     {

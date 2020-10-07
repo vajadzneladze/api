@@ -39,7 +39,10 @@ Route::group(['middleware' => 'auth:api'], function ($router) {
         'middleware' => ['setlocale']
     ], function () {
         Route::apiResource('contacts', 'ContactController');
+
+        Route::get('dictionaries/getAllRecord', 'DictionaryController@getAllRecord');
         Route::apiResource('dictionaries', 'DictionaryController');
+
         Route::apiResource('blogs', 'BlogController');
         Route::apiResource('vacancies', 'VacancyController');
         Route::apiResource('abouts', 'AboutController');

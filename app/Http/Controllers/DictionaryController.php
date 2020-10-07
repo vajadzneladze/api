@@ -18,7 +18,7 @@ class DictionaryController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource with pager.
      *
      * @return \Illuminate\Http\Response
      */
@@ -151,6 +151,30 @@ class DictionaryController extends Controller
 
         try {
             $result['data'] = $this->service->delete($lang, $id);
+        } catch (Exception $e) {
+            $result = [
+                'status' => 500,
+                'error'  => $e->getMessage()
+            ];
+        }
+
+        return response()->json($result, $result['status']);
+    }
+
+
+
+
+    /**
+     * Display a listing of the resource without pagination.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getAllRecord($lang)
+    {
+        $result  = ['status' => 200];
+
+        try {
+            $result['data'] = $this->service->getAllRecord($lang);
         } catch (Exception $e) {
             $result = [
                 'status' => 500,

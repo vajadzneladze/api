@@ -19,8 +19,16 @@ class Dictionary extends Model
         'module',
     ];
 
+    protected $appends = ['language'];
+
+
     public function lang()
     {
         return $this->belongsTo('App\Models\Localization', 'local_id')->select('id', 'abbreviation', 'native');
+    }
+
+    public function getLanguageAttribute()
+    {
+        return $this->lang->native;
     }
 }
