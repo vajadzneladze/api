@@ -121,6 +121,40 @@ class DictionarySeeder extends Seeder
             ],
             [
                 [
+                    'key'   => 'first_name',
+                    'value' => 'First Name',
+                    'local_id' => '2'
+                ],
+                [
+                    'key'   => 'first_name',
+                    'value' => 'სახელი',
+                    'local_id' => '1'
+                ],
+                [
+                    'key'   => 'first_name',
+                    'value' => 'Имя',
+                    'local_id' => '3'
+                ],
+            ],
+            [
+                [
+                    'key'   => 'last_name',
+                    'value' => 'Last Name',
+                    'local_id' => '2'
+                ],
+                [
+                    'key'   => 'last_name',
+                    'value' => 'გვარი',
+                    'local_id' => '1'
+                ],
+                [
+                    'key'   => 'last_name',
+                    'value' => 'Фамилия',
+                    'local_id' => '3'
+                ],
+            ],
+            [
+                [
                     'key'   => 'file_id',
                     'value' => 'File ID',
                     'local_id' => '2'
@@ -257,6 +291,40 @@ class DictionarySeeder extends Seeder
             ],
             [
                 [
+                    'key'   => 'company',
+                    'value' => 'Company',
+                    'local_id' => '2'
+                ],
+                [
+                    'key'   => 'company',
+                    'value' => 'კომპანია',
+                    'local_id' => '1'
+                ],
+                [
+                    'key'   => 'company',
+                    'value' => 'Компания',
+                    'local_id' => '3'
+                ],
+            ],
+            [
+                [
+                    'key'   => 'position',
+                    'value' => 'Position',
+                    'local_id' => '2'
+                ],
+                [
+                    'key'   => 'position',
+                    'value' => 'პოზიცია',
+                    'local_id' => '1'
+                ],
+                [
+                    'key'   => 'position',
+                    'value' => 'Должность',
+                    'local_id' => '3'
+                ],
+            ],
+            [
+                [
                     'key'   => 'abbreviation',
                     'value' => 'Abbreviation',
                     'local_id' => '2'
@@ -269,6 +337,40 @@ class DictionarySeeder extends Seeder
                 [
                     'key'   => 'abbreviation',
                     'value' => 'Сокращение',
+                    'local_id' => '3'
+                ],
+            ],
+            [
+                [
+                    'key'   => 'active',
+                    'value' => 'Active',
+                    'local_id' => '2'
+                ],
+                [
+                    'key'   => 'active',
+                    'value' => 'აქტიური',
+                    'local_id' => '1'
+                ],
+                [
+                    'key'   => 'active',
+                    'value' => 'Активный',
+                    'local_id' => '3'
+                ],
+            ],
+            [
+                [
+                    'key'   => 'inactive',
+                    'value' => 'Inactive',
+                    'local_id' => '2'
+                ],
+                [
+                    'key'   => 'inactive',
+                    'value' => 'შეჩერებული',
+                    'local_id' => '1'
+                ],
+                [
+                    'key'   => 'inactive',
+                    'value' => 'Остановлен',
                     'local_id' => '3'
                 ],
             ],
@@ -322,6 +424,26 @@ class DictionarySeeder extends Seeder
                 [
                     'key'   => 'contact',
                     'value' => 'Связаться с нами',
+                    'module' => 'navigation',
+                    'local_id' => '3'
+                ],
+            ],
+            [
+                [
+                    'key'   => 'feedback',
+                    'value' => 'Feedback',
+                    'module' => 'navigation',
+                    'local_id' => '2'
+                ],
+                [
+                    'key'   => 'feedback',
+                    'value' => 'გამოხმაურება',
+                    'module' => 'navigation',
+                    'local_id' => '1'
+                ],
+                [
+                    'key'   => 'feedback',
+                    'value' => 'Обратная связь',
                     'module' => 'navigation',
                     'local_id' => '3'
                 ],
@@ -448,6 +570,26 @@ class DictionarySeeder extends Seeder
             ],
             [
                 [
+                    'key'   => 'blog',
+                    'value' => 'Blog',
+                    'module' => 'navigation',
+                    'local_id' => '2'
+                ],
+                [
+                    'key'   => 'blog',
+                    'value' => 'ბლოგი',
+                    'module' => 'navigation',
+                    'local_id' => '1'
+                ],
+                [
+                    'key'   => 'blog',
+                    'value' => 'Блог',
+                    'module' => 'navigation',
+                    'local_id' => '3'
+                ],
+            ],
+            [
+                [
                     'key'   => 'key',
                     'value' => 'Key',
                     'module' => 'dictionaries',
@@ -542,11 +684,6 @@ class DictionarySeeder extends Seeder
                 App\Models\Dictionary::updateOrCreate($item[1]);
                 App\Models\Dictionary::updateOrCreate($item[2]);
             }
-
-
-
-
-            // App\Models\Localization::updateOrCreate($item);
         }
     }
 }
