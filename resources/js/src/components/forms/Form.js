@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
+/** Styles */
+import './Form.css';
+
 /** ui-components */
 import Input from '../ui-components/input/Input';
 
@@ -10,8 +13,7 @@ import { formObjToPostData } from '../../services/dataHandlerServices';
 
 const Form = ({ formData , module , method = 'store' , id = 1 , lang = ''}) => {
 
-    const [ data , setData ] = useState(null);
-
+    const [data, setData] = useState(null);
 
     const onChangeHandler = ( val, name ) => {
 
@@ -44,6 +46,7 @@ const Form = ({ formData , module , method = 'store' , id = 1 , lang = ''}) => {
                         path: file.path
                     }
                 })
+                
                 alert('სურათი ატვირთულია')
             }).catch(err => {
                 alert('ფაილი არ აიტვირთა')
@@ -82,13 +85,12 @@ const Form = ({ formData , module , method = 'store' , id = 1 , lang = ''}) => {
         setData({ ...formData });
     }, [ formData ])
 
-
     return (
         <div className="row">
-            <div className="col-lg-5"> 
-                <h4 className = 'text-center'> ყურადღებით შეავსეთ ყველა აუცილებელი (*) ველი </h4>
-                <hr/>
-                <form className = 'text-center customFormStyle' onSubmit = { submitHandler }>
+            <div className="col-lg-5 customFormStyle"> 
+                <h5 className='text-left'> ყურადღებით შეავსეთ ყველა აუცილებელი (*) ველი </h5>
+                <br/>
+                <form className = 'text-center ' onSubmit = { submitHandler }>
                     {
                         data ? 
                             Object.keys(data).map( item => {
@@ -99,6 +101,16 @@ const Form = ({ formData , module , method = 'store' , id = 1 , lang = ''}) => {
                     <button type = 'submit' className = 'btn btn-primary form-control'> გაგზავნა </button>
                 </form>
             </div>
+            
+            {
+                ( data && data.fileId && data.fileId.path)  ? <div className="col-lg-5 customFormStyle"> 
+                    <h5 className='text-left'> Live Image * </h5>
+                                    <div dangerouslySetInnerHTML={ { __html: data.description.value } }></div>
+
+                            <img src = { `http://127.0.0.1:8000${data.fileId.path}`}  className="img-thumbnail"/>
+                        </div> : null
+            }
+            
         </div>
     );
 }

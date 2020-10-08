@@ -17,13 +17,12 @@ import Navbar from './components/nav/Navbar';
 /** View */
 import Login from './view/auth/Login';
 import Blank from './view/blank/Blank';
-// import User from './view/user/User';
-// import CreateUser from './view/user/CreateUser';
-// import EditUser from './view/user/EditUser';
-// import Role from './view/role/Role';
-// import CreateRole from './view/role/CreateRole';
-// import EditRole from './view/role/EditRole';
-
+import User from './view/user/User';
+import CreateUser from './view/user/CreateUser';
+import EditUser from './view/user/EditUser';
+import Role from './view/role/Role';
+import CreateRole from './view/role/CreateRole';
+import EditRole from './view/role/EditRole';
 import Contact from './view/contact/Contact';
 import CreateContact from './view/contact/CreateContact';
 import EditContact from './view/contact/EditContact';
@@ -57,7 +56,7 @@ import WorkingStyle from './view/workingstyle/WorkingStyle';
 import EditFrontBox from './view/frontbox/EditFrontBox';
 import CreateFrontBox from './view/frontbox/CreateFrontBox';
 import FrontBox from './view/frontbox/FrontBox';
- 
+
 const App = () => {
 
   const user = useSelector(state => state.currentUser);
@@ -67,7 +66,7 @@ const App = () => {
 
   /** Checks if the access_token is valid */
   const authHandler = useCallback((accessToken) => {
-      
+
       API.post('auth/me').then(res => {
 
         if (res.data) {
@@ -84,17 +83,17 @@ const App = () => {
 
         localStorage.removeItem('access_token');
         window.location.href = '/login';
-        
+
       })
   }, [ dispatch ])
-  
-  
-  
+
+
+
   /** Gets all available languages */
   const localizationHandler = useCallback(() => {
 
     API.get(`localizations`).then(res => {
-        
+
         const { data } = res.data
 
         let languages = [];
@@ -107,7 +106,7 @@ const App = () => {
 
             if (item.default) {
 
-              local = item.abbreviation;  
+              local = item.abbreviation;
             }
 
             languages[item.abbreviation] = item.native;
@@ -136,32 +135,40 @@ const App = () => {
 
       })
   }, [ dispatch ])
-  
+
 
 
   /** Sets all translations (key: value) from the database to Redux Store  */
   const dictionaryHandler = useCallback( lang => {
 
-    let apiUrl = `${dictionary.lang}/dictionaries`;
+    let apiUrl = `${dictionary.lang}/dictionaries/getAllRecord`;
 
       API.get(apiUrl).then(res => {
 
         const { data } = res.data;
 
-        let newArray = [];                                                             
-        let obj = data.data;
+        let obj = data;
+        let dictionary = {};
 
         obj.forEach(item => {
-          newArray[item.key] = item.value;
-        })
-        
-        dispatch(allActions.dictionaryActions.setDictionary(newArray));
 
+          let translatePage = item.module ? item.module : 'global';
+
+          dictionary = {
+            ...dictionary,
+            [translatePage ] : {
+              ...dictionary[translatePage],
+              [item.key] : item.value ? item.value : item.key
+            }
+          }
+        })
+
+        dispatch(allActions.dictionaryActions.setDictionary(dictionary));
       }).catch(err => {
         console.log('something went wrong ...')
       })
   }, [ dispatch , dictionary.lang ])
-  
+
 
   /** If there is no access_token in the localStorage ,
    *  the application is redirected to the login page,
@@ -171,7 +178,7 @@ const App = () => {
     const accessToken = localStorage.getItem('access_token');
 
     if(!accessToken){
-      
+
       if(window.location.pathname !== '/login'){
         window.location.href = '/login';
       }
@@ -182,39 +189,30 @@ const App = () => {
     }
   }, [ authHandler ])
 
-  useEffect(() => { 
+  useEffect(() => {
 
       localizationHandler();
   }, [localizationHandler])
-  
-   useEffect(() => { 
+
+   useEffect(() => {
 
       dictionaryHandler();
   },[dictionaryHandler])
-  
-  return ( 
+
+  return (
     <Router>
       { user.loggedIn ? <Navbar /> : null}
-      
+
       <Route path = '/login'    component = { Login } exact />
       <Route path = '/blank'    component = { Blank } exact />
-    {/* 
+
       <Route path = '/:lang?/roles'           component = { Role } exact />
       <Route path = '/:lang?/roles/create'    component = { CreateRole } exact />
       <Route path = '/:lang?/roles/:id/edit'  component = { EditRole } exact />
 
-      <Route path = '/:lang?//users'             component = { User } exact />
-      <Route path = '/:lang?//users/create'      component = { CreateUser } exact />
-      <Route path = '/:lang?//users/:id/edit'    component = { EditUser } exact />
-
-      <Route path = '/:lang?//users'             component = { User } exact />
-      <Route path = '/:lang?//users/create'      component = { CreateUser } exact />
-      <Route path = '/:lang?//users/:id/edit'    component = { EditUser } exact /> 
-      */}
-
-      {/* <Route path = ':lang/contacts'       component = { Contact } exact /> */}
-   
-      
+      <Route path = '/:lang?/users'             component = { User } exact />
+      <Route path = '/:lang?/users/create'      component = { CreateUser } exact />
+      <Route path = '/:lang?/users/:id/edit'    component = { EditUser } exact />
 
       <Route path = '/:lang?/frontboxes/create'    component = { CreateFrontBox } exact />
       <Route path = '/:lang?/frontboxes/:id/edit'  component = { EditFrontBox } exact />
@@ -223,12 +221,12 @@ const App = () => {
       <Route path = '/:lang?/workingstyles/create'    component = { CreateWorkingStyle } exact />
       <Route path = '/:lang?/workingstyles/:id/edit'  component = { EditWorkingStyle } exact />
       <Route path = '/:lang?/workingstyles'           component = { WorkingStyle } exact />
-      
+
 
       <Route path = '/:lang?/slides/create'    component = { CreateSlide } exact />
       <Route path = '/:lang?/slides/:id/edit'  component = { EditSlide } exact />
       <Route path='/:lang?/slides'             component = { Slide } exact />
-      
+
 
       <Route path = '/:lang?/numbers/create'    component = { CreateNumber } exact />
       <Route path = '/:lang?/numbers/:id/edit'  component = { EditNumber } exact />
@@ -241,7 +239,7 @@ const App = () => {
       <Route path = '/:lang?/abouts/create'    component = { CreateAbout } exact />
       <Route path = '/:lang?/abouts/:id/edit'  component = { EditAbout } exact />
       <Route path = '/:lang?/abouts'           component = { About } exact />
-      
+
       <Route path='/:lang?/vacancies/create' component={CreateVacancy} exact />
       <Route path = '/:lang?/vacancies/:id/edit'  component = { EditVacancy } exact />
       <Route path = '/:lang?/vacancies'           component = { Vacancy } exact />
@@ -250,21 +248,21 @@ const App = () => {
       <Route path = '/:lang?/blogs/:id/edit'  component = { EditBlog } exact />
       <Route path = '/:lang?/blogs'           component = { Blog } exact />
 
-      
+
       <Route path = '/:lang?/dictionaries/create'    component = { CreateDictionary } exact />
       <Route path = '/:lang?/dictionaries/:id/edit'  component = { EditDictionary } exact />
       <Route path = '/:lang?/dictionaries'           component = { Dictionary } exact />
-      
+
 
       <Route path = '/:lang?/localizations/create'    component = { CreateLocalization } exact />
       <Route path = '/:lang?/localizations/:id/edit'  component = { EditLocalization } exact />
       <Route path = '/:lang?/localizations'           component = { Localization } exact />
-      
+
 
       <Route path = '/:lang?/contacts/create'    component = { CreateContact } exact />
       <Route path = '/:lang?/contacts/:id/edit'  component = { EditContact } exact />
       <Route path = '/:lang?/contacts' component = { Contact } exact />
-      
+
     </Router>
   );
 }
