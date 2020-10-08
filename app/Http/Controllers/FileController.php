@@ -9,13 +9,6 @@ use Exception;
 
 class FileController extends Controller
 {
-    /**
-     * FileController constructor.
-     */
-    public function __construct()
-    {
-        $this->middleware('auth:api');
-    }
 
     /**
      * Display a listing of the resource.
@@ -64,6 +57,24 @@ class FileController extends Controller
         $newRecord = File::create($data);
 
         return $newRecord;
+    }
+
+
+    public function storByCKEeditor(Request $request)
+    {
+        if ($request->hasFile('upload')) {
+            $fileName      = time().'_'.$request->upload->getClientOriginalName();
+            $filePath      = $request->file('upload')->storeAs('uploads/ckeditor', $fileName, 'public');
+            $fileExtension = $request->upload->getClientOriginalExtension();
+
+            $data['name']   = $fileName;
+            $data['path']   = '/storage/'.$filePath;
+            $data['format'] = $fileExtension;
+            $data['module'] = 'ckeditor';
+
+
+            return response()->json([ 'fileName' => $fileName, 'uploaded' => true, 'url' => 'http://127.0.0.1:8000/storage/'.$filePath, ]);
+        }
     }
 
     /**

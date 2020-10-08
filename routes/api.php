@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Hash;
 |
 */
 
+
+
 Route::group(['middleware' => 'api','prefix' => 'auth'], function ($router) {
     Route::post('login', 'AuthController@login');
     Route::post('logout', 'AuthController@logout');
@@ -23,11 +25,14 @@ Route::group(['middleware' => 'api','prefix' => 'auth'], function ($router) {
     Route::post('me', 'AuthController@me');
 });
 
+Route::post('ckeditor/upload', 'FileController@storByCKEeditor');
+
 
 Route::group(['middleware' => 'auth:api'], function ($router) {
 
     /** Lang is not Required */
     Route::apiResource('files', 'FileController');
+
     Route::apiResource('users', 'UserController');
     Route::apiResource('roles', 'RoleController');
     Route::apiResource('localizations', 'LocalizationController');
