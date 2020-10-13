@@ -16,6 +16,7 @@ class Blog extends Model
         'local_id',
         'title',
         'description',
+        'content',
         'status',
         'file_id'
     ];

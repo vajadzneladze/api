@@ -18,6 +18,7 @@ class CreateAboutsTable extends Migration
             $table->bigInteger('item_id')->nullable();
             $table->bigInteger('local_id');
             $table->string('title')->nullable();
+            $table->text('description')->nullable();
             $table->text('content')->nullable();
             $table->boolean('status')->default(true);
             $table->timestamps();

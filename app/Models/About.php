@@ -15,6 +15,7 @@ class About extends Model
         'item_id',
         'local_id',
         'title',
+        'description',
         'content',
         'status',
         'file_id'

@@ -410,6 +410,23 @@ class DictionarySeeder extends Seeder
             ],
             [
                 [
+                    'key'   => 'add_new',
+                    'value' => 'Create New Record',
+                    'local_id' => '2'
+                ],
+                [
+                    'key'   => 'add_new',
+                    'value' => 'ახალი ჩანაწერის დამატება',
+                    'local_id' => '1'
+                ],
+                [
+                    'key'   => 'add_new',
+                    'value' => 'Добавить новую запись',
+                    'local_id' => '3'
+                ],
+            ],
+            [
+                [
                     'key'   => 'contact',
                     'value' => 'Contact',
                     'module' => 'navigation',
@@ -584,6 +601,26 @@ class DictionarySeeder extends Seeder
                 [
                     'key'   => 'blog',
                     'value' => 'Блог',
+                    'module' => 'navigation',
+                    'local_id' => '3'
+                ],
+            ],
+            [
+                [
+                    'key'   => 'slides',
+                    'value' => 'Slides',
+                    'module' => 'navigation',
+                    'local_id' => '2'
+                ],
+                [
+                    'key'   => 'slides',
+                    'value' => 'სლაიდები',
+                    'module' => 'navigation',
+                    'local_id' => '1'
+                ],
+                [
+                    'key'   => 'slides',
+                    'value' => 'Слайд',
                     'module' => 'navigation',
                     'local_id' => '3'
                 ],
